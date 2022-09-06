@@ -1,14 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\API;
-
-
 use App\Http\Controllers\Controller;
-
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\HasApiTokens;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 
 
 use App\Models\User;
@@ -26,7 +24,7 @@ class AuthController extends Controller
             'password' => 'required|string',
             'roleid' => 'required|string',
             'rolename' => 'required|string',
-            
+
         ]);
 
         $user = User::create([
@@ -35,7 +33,7 @@ class AuthController extends Controller
             'lastname' => $validations['lastname'],
             'cnic' => $validations['cnic'],
             'password' => Hash::make($validations['password']),
-            'roleid' => $validations['roleid'], 
+            'roleid' => $validations['roleid'],
             'rolename' => $validations['rolename'],
 
 
@@ -61,7 +59,7 @@ class AuthController extends Controller
         });
 
 
-        return response(['message' => 'Logged out Successfully']);
+        return response(['message' => 'Logged out Successfully'],200);
     }
 
     public function alluser()
@@ -70,45 +68,90 @@ class AuthController extends Controller
         $user = User::all();
 
         return response($user);
-
     }
+
+
+
+
+
+    // public function login(Request $request)
+    // {
+
+    //     $loginvalidations = $request->validate([
+
+
+    //         'cnic' => 'required|string|max:191',
+    //         'password' => 'required|string',
+    //     ]);
+
+    //     $user = User::where('cnic', $loginvalidations['cnic'])->first();
+
+    //     if (!$user || !Hash::check($loginvalidations['password'], $user->password)) {
+
+    //         return response(['message' => 'Invalid creditanls'], 401);
+    //     } else {
+    //         $token = $user->createToken('MainAdmin')->plainTextToken;
+
+    //         $response = [
+
+    //             'user' => $user,
+    //             'token' => $token,
+    //             'success' => true,
+
+    //         ];
+
+    //         return response($response, 200);
+    //     }
+    // }
+
+
 
     public function login(Request $request)
     {
 
-        $loginvalidations = $request->validate([
 
+        $validator = Validator::make($request->all(), [
 
-            'cnic' => 'required|string|max:191',
-            'password' => 'required|string',
+            'cnic' => 'required',
+            'password' => 'required',
+
         ]);
 
-        $user = User::where('cnic', $loginvalidations['cnic'])->first();
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'message' => $validator->errors()
+            ];
+            return response()->json($response, 400);
+        } elseif (Auth::attempt(['cnic' => $request->cnic, 'password' => $request->password])) {
 
-        if(!$user || !Hash::check($loginvalidations['password'],$user->password))
-        {
+            $user = Auth::user();
 
-            return response(['message'=> 'Invalid creditanls'],401);
-        }
-        else
-        {
-            $token = $user->createToken('MainAdmin')->plainTextToken;
+
+
+            //$success['token'] = $user->createToken('MyApp')->plainTextToken;
+
+            $token = $request->user()->createToken('MyApp')->plainTextToken;
+
+
+            $success['firstname'] = $user->firstname;
 
             $response = [
-
-                'user' => $user,
-                'token' => $token,
                 'success' => true,
-                
+
+                'data' => $success,
+                'token' => $token,
+                'message' => 'User login Successfully'
             ];
+            return response()->json($response);
+        } else if (!Auth::attempt(['cnic' => $request->cnic, 'password' => $request->password])) {
 
-            return response($response,200);
 
-
-
+            $response2 = [
+                'success' => false,
+                'message' => 'UnAthorized'
+            ];
+            return response()->json($response2, 401);
         }
     }
-
-
-   
 }
