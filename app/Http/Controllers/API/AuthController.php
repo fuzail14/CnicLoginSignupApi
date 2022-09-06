@@ -24,6 +24,9 @@ class AuthController extends Controller
             'lastname' => 'required|string|max:191',
             'cnic' => 'required|string|max:191|unique:users,cnic',
             'password' => 'required|string',
+            'roleid' => 'required|string',
+            'rolename' => 'required|string',
+            
         ]);
 
         $user = User::create([
@@ -32,6 +35,8 @@ class AuthController extends Controller
             'lastname' => $validations['lastname'],
             'cnic' => $validations['cnic'],
             'password' => Hash::make($validations['password']),
+            'roleid' => $validations['roleid'], 
+            'rolename' => $validations['rolename'],
 
 
         ]);
@@ -41,6 +46,7 @@ class AuthController extends Controller
 
             'user' => $user,
             'token' => $token,
+            'success' => true,
         ];
 
         return response($response, 200);
@@ -92,6 +98,8 @@ class AuthController extends Controller
 
                 'user' => $user,
                 'token' => $token,
+                'success' => true,
+                
             ];
 
             return response($response,200);

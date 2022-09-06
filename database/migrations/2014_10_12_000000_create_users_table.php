@@ -21,6 +21,11 @@ return new class extends Migration
             $table->string('cnic')->unique();
             
             $table->string('password');
+            $table->string('roleid');
+            $table->string('rolename');
+
+
+
             $table->rememberToken();
             $table->timestamps();
         });
