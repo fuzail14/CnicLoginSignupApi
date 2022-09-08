@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +17,9 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validations = $request->validate([
+
+        $validations = Validator::make($request->all(), [
+
 
             'firstname' => 'required|string|max:191',
             'lastname' => 'required|string|max:191',
@@ -25,16 +28,38 @@ class AuthController extends Controller
             'roleid' => 'required|string',
             'rolename' => 'required|string',
 
+
         ]);
+
+        
+
+        
+        if ($validations->fails()) {
+            return response()->json([
+
+                'error' => $validations->errors()->all(),
+                "success" => false,
+            ], 403);
+        }
+        // $validations = $request->validate([
+
+        //     'firstname' => 'required|string|max:191',
+        //     'lastname' => 'required|string|max:191',
+        //     'cnic' => 'required|string|max:191|unique:users,cnic',
+        //     'password' => 'required|string',
+        //     'roleid' => 'required|string',
+        //     'rolename' => 'required|string',
+
+        // ]);
 
         $user = User::create([
 
-            'firstname' => $validations['firstname'],
-            'lastname' => $validations['lastname'],
-            'cnic' => $validations['cnic'],
-            'password' => Hash::make($validations['password']),
-            'roleid' => $validations['roleid'],
-            'rolename' => $validations['rolename'],
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'cnic' => $request->cnic,
+            'password' => Hash::make($request->password),
+            'roleid' => $request->roleid,
+            'rolename' => $request->rolename,
 
 
         ]);
@@ -48,7 +73,9 @@ class AuthController extends Controller
         ];
 
         return response($response, 200);
+        
     }
+
 
     public function logout()
     {
@@ -59,7 +86,7 @@ class AuthController extends Controller
         });
 
 
-        return response(['message' => 'Logged out Successfully'],200);
+        return response(['message' => 'Logged out Successfully'], 200);
     }
 
     public function alluser()
@@ -102,7 +129,7 @@ class AuthController extends Controller
 
     //         return response($response, 200);
     //     }
-    // }
+    // } 
 
 
 
@@ -130,11 +157,12 @@ class AuthController extends Controller
 
 
             //$success['token'] = $user->createToken('MyApp')->plainTextToken;
+            
 
             $token = $request->user()->createToken('MyApp')->plainTextToken;
 
 
-            $success['firstname'] = $user->firstname;
+            $success = $user;
 
             $response = [
                 'success' => true,
