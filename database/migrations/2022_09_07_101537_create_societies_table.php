@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('societyname');
             $table->string('societyaddress');
-            $table->unsignedBigInteger('roleid');
-            $table->foreign('roleid')->references('id')->on('users');
+            $table->unsignedBigInteger('mainadminid');
+            $table->foreign('mainadminid')->references('id')->on('users');
 
             $table->timestamps();
         });

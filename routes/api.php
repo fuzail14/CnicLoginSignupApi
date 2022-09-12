@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\SuperAdminLoginAuthController;
 use App\Http\Controllers\API\AddSocietyController;
 
 
@@ -17,15 +17,24 @@ use App\Http\Controllers\API\AddSocietyController;
 |
 */
 
-Route::post('register',[AuthController::class,'register']);
-Route::post('login',[AuthController::class,'login']);
+Route::post('register',[SuperAdminLoginAuthController::class,'register']);
+Route::post('login',[SuperAdminLoginAuthController::class,'login']);
 
 
 
 Route::middleware(['auth:sanctum'])->group(function(){
-    Route::post('logout',[AuthController::class,'logout']);
-    Route::get('alluser',[AuthController::class,'alluser']);
+    Route::post('logout',[SuperAdminLoginAuthController::class,'logout']);
+    Route::get('alluser',[SuperAdminLoginAuthController::class,'alluser']);
     Route::post('addsociety',[AddSocietyController::class,'addsociety']);
+    Route::post('updatesociety/{id}',[AddSocietyController::class,'updatesociety']);
+    Route::get('viewallsocieties/{mainadminid}',[AddSocietyController::class,'viewallsocieties']);
+    Route::delete('deletesociety/{id}',[AddSocietyController::class,'deletesociety']);
+    
+
+    
+    
+    
+
     
 
     

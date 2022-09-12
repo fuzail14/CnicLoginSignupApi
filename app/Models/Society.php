@@ -15,7 +15,7 @@ class Society extends Model
     protected $fillable = [
         'societyname',
         'societyaddress',
-        'roleid',
+        'mainadminid',
 
     ];
 }
