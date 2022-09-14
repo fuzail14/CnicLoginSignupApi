@@ -17,7 +17,7 @@ use App\Http\Controllers\API\AddSocietyController;
 |
 */
 
-Route::post('register',[SuperAdminLoginAuthController::class,'register']);
+Route::post('register/{superadminid?}/{societyid?}',[SuperAdminLoginAuthController::class,'register']);
 Route::post('login',[SuperAdminLoginAuthController::class,'login']);
 
 
@@ -29,6 +29,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('updatesociety/{id}',[AddSocietyController::class,'updatesociety']);
     Route::get('viewallsocieties/{mainadminid}',[AddSocietyController::class,'viewallsocieties']);
     Route::delete('deletesociety/{id}',[AddSocietyController::class,'deletesociety']);
+    Route::get('searchsociety/{q?}',[AddSocietyController::class,'searchsociety']);
+    
     
 
     

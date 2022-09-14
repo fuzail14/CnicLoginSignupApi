@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class Society extends Model
-{
+{protected $table="societies";
     use HasApiTokens, HasFactory, Notifiable;
 
 

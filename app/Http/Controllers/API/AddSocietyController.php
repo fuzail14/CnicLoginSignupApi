@@ -73,7 +73,7 @@ class AddSocietyController extends Controller
             'societyaddress' => 'required',
 
 
-           
+
 
         ]);
         if ($validations->fails()) {
@@ -110,18 +110,37 @@ class AddSocietyController extends Controller
     {
 
 
-        
+
         $society = Society::where('id', $id)->delete();
 
-        if($society==0)
-        {
+        if ($society == 0) {
 
             return response()->json(['data' => $society, "message" => "society doesn't exist "]);
-
-
         }
 
 
         return response()->json(['data' => $society, "message" => "deleted society successfully"]);
+    }
+
+    public function searchsociety($q)
+    {
+        dd($q);
+        $request = Society::where('societyname', 'LIKE', '%' . $q . '%')
+        ->orWhere('societyaddress', 'LIKE', '%' . $q . '%')->get();
+
+
+        //if ($request) {
+            return response()->json([
+                'data' => $request,
+
+                'message' => 'success',
+            ]);
+        //}
+
+        // return response()->json([
+            
+
+        //     'message' => 'Not Found',
+        // ]);
     }
 }

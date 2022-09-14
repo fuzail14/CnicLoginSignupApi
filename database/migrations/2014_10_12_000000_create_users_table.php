@@ -17,12 +17,17 @@ return new class extends Migration
             $table->id();
             $table->string('firstname');
             $table->string('lastname');
+            $table->string('mobileno');
+            $table->string('address');
+            
             
             $table->string('cnic')->unique();
             
             $table->string('password');
             $table->string('roleid');
             $table->string('rolename');
+            $table->string('image');
+            
 
 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\subadminsociety;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -15,25 +16,37 @@ use App\Models\User;
 
 class SuperAdminLoginAuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(Request $request,    $superadminid=null, $societyid = null)
     {
+
+
 
         $validations = Validator::make($request->all(), [
 
 
             'firstname' => 'required|string|max:191',
             'lastname' => 'required|string|max:191',
+            'mobileno' => 'required',
+            'address' => 'required|string',
+
             'cnic' => 'required|string|max:191|unique:users,cnic',
             'password' => 'required|string',
             'roleid' => 'required|string',
             'rolename' => 'required|string',
+            'image' => 'required',
+
+
+
+
 
 
         ]);
 
         
 
-        
+
+
+
         if ($validations->fails()) {
             return response()->json([
 
@@ -41,28 +54,96 @@ class SuperAdminLoginAuthController extends Controller
                 "success" => false,
             ], 403);
         }
-        // $validations = $request->validate([
-
-        //     'firstname' => 'required|string|max:191',
-        //     'lastname' => 'required|string|max:191',
-        //     'cnic' => 'required|string|max:191|unique:users,cnic',
-        //     'password' => 'required|string',
-        //     'roleid' => 'required|string',
-        //     'rolename' => 'required|string',
-
-        // ]);
-
-        $user = User::create([
-
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'cnic' => $request->cnic,
-            'password' => Hash::make($request->password),
-            'roleid' => $request->roleid,
-            'rolename' => $request->rolename,
 
 
+
+        $imagepath = $request->file('image')->store('public/uploads');
+
+
+
+        if($superadminid && $societyid != null )
+        {
+             $isValidate = Validator::make($request->all(), [
+                    'firstname' => 'required|string|max:191',
+                    'lastname' => 'required|string|max:191',
+                    'mobileno' => 'required',
+                    'address' => 'required',
+                    
+                    'cnic' => 'required|unique:users|max:191',
+                    'roleid' => 'required',
+                    'rolename' => 'required',
+                    'password' => 'required',
+                    
+                ]);
+                if ($isValidate->fails()) {
+                    return response()->json([
+                        "errors" => $isValidate->errors()->all(),
+                        "success" => false
+                    ], 403);
+                }
+                $user = new User;
+                $user->firstname = $request->firstname;
+                $user->lastname = $request->lastname;
+                $user->mobileno = $request->mobileno;
+                $user->address = $request->address;
+                
+                $user->cnic = $request->cnic;
+                $user->roleid = $request->roleid;
+                $user->rolename = $request->rolename;
+                $user->password = Hash::make($request->password);
+                $user->image = $imagepath;
+                $user->save();
+                $subadminsocieties = new subadminsociety;
+                $subadminsocieties->superadminid=$superadminid;
+                $subadminsocieties-> subadminid=$user->id;
+                $subadminsocieties-> societyid =$societyid;
+                $subadminsocieties->save();
+                $tk =   $user->createToken('token')->plainTextToken;
+                return response()->json(
+                    [
+                        "token" => $tk,
+                        "success" => true,
+                        "message" => "User Register Successfully",
+                        "data" => $user,
+                    ]
+                );
+            }
+
+
+
+
+
+        $isValidate = Validator::make($request->all(), [
+            'firstname' => 'required|string|max:191',
+            'lastname' => 'required|string|max:191',
+            'mobileno' => 'required',
+            'address' => 'required',
+
+            'cnic' => 'required|unique:users|max:191',
+            'roleid' => 'required',
+            'rolename' => 'required',
+            'password' => 'required',
         ]);
+        if ($isValidate->fails()) {
+            return response()->json([
+                "errors" => $isValidate->errors()->all(),
+                "success" => false
+            ], 403);
+        }
+        $user = new User;
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->mobileno = $request->mobileno;
+        $user->address = $request->address;
+        $user->cnic = $request->cnic;
+        $user->roleid = $request->roleid;
+        $user->rolename = $request->rolename;
+        $user->password = Hash::make($request->password);
+        $user->image = $imagepath;
+        $user->save();
+
+
+
 
         $token = $user->createToken('MainAdmin')->plainTextToken;
         $response = [
@@ -73,7 +154,6 @@ class SuperAdminLoginAuthController extends Controller
         ];
 
         return response($response, 200);
-        
     }
 
 
@@ -93,6 +173,8 @@ class SuperAdminLoginAuthController extends Controller
     {
 
         $user = User::all();
+
+
 
         return response($user);
     }
@@ -157,7 +239,7 @@ class SuperAdminLoginAuthController extends Controller
 
 
             //$success['token'] = $user->createToken('MyApp')->plainTextToken;
-            
+
 
             $token = $request->user()->createToken('MyApp')->plainTextToken;
 
