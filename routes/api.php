@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SuperAdminLoginAuthController;
 use App\Http\Controllers\API\AddSocietyController;
+use App\Http\Controllers\API\SubAdminSocietyController;
+
 
 
 /*
@@ -17,7 +19,8 @@ use App\Http\Controllers\API\AddSocietyController;
 |
 */
 
-Route::post('register/{superadminid?}/{societyid?}',[SuperAdminLoginAuthController::class,'register']);
+Route::post('register',[SuperAdminLoginAuthController::class,'register']);
+
 Route::post('login',[SuperAdminLoginAuthController::class,'login']);
 
 
@@ -30,6 +33,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('viewallsocieties/{mainadminid}',[AddSocietyController::class,'viewallsocieties']);
     Route::delete('deletesociety/{id}',[AddSocietyController::class,'deletesociety']);
     Route::get('searchsociety/{q?}',[AddSocietyController::class,'searchsociety']);
+    Route::post('registersubadmin',[SubAdminSocietyController::class,'registersubadmin']);
+
+
     
     
 

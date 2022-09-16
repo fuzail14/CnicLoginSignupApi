@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\subadminsociety;
+use App\Models\Society;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +18,7 @@ use App\Models\User;
 
 class SuperAdminLoginAuthController extends Controller
 {
-    public function register(Request $request,    $superadminid=null, $societyid = null)
+    public function register(Request $request)
     {
 
 
@@ -42,7 +44,7 @@ class SuperAdminLoginAuthController extends Controller
 
         ]);
 
-        
+
 
 
 
@@ -58,56 +60,85 @@ class SuperAdminLoginAuthController extends Controller
 
 
         $imagepath = $request->file('image')->store('public/uploads');
+        
 
 
 
-        if($superadminid && $societyid != null )
-        {
-             $isValidate = Validator::make($request->all(), [
-                    'firstname' => 'required|string|max:191',
-                    'lastname' => 'required|string|max:191',
-                    'mobileno' => 'required',
-                    'address' => 'required',
-                    
-                    'cnic' => 'required|unique:users|max:191',
-                    'roleid' => 'required',
-                    'rolename' => 'required',
-                    'password' => 'required',
-                    
-                ]);
-                if ($isValidate->fails()) {
-                    return response()->json([
-                        "errors" => $isValidate->errors()->all(),
-                        "success" => false
-                    ], 403);
-                }
-                $user = new User;
-                $user->firstname = $request->firstname;
-                $user->lastname = $request->lastname;
-                $user->mobileno = $request->mobileno;
-                $user->address = $request->address;
-                
-                $user->cnic = $request->cnic;
-                $user->roleid = $request->roleid;
-                $user->rolename = $request->rolename;
-                $user->password = Hash::make($request->password);
-                $user->image = $imagepath;
-                $user->save();
-                $subadminsocieties = new subadminsociety;
-                $subadminsocieties->superadminid=$superadminid;
-                $subadminsocieties-> subadminid=$user->id;
-                $subadminsocieties-> societyid =$societyid;
-                $subadminsocieties->save();
-                $tk =   $user->createToken('token')->plainTextToken;
-                return response()->json(
-                    [
-                        "token" => $tk,
-                        "success" => true,
-                        "message" => "User Register Successfully",
-                        "data" => $user,
-                    ]
-                );
-            }
+        // if($superadminid && $societyid != null )
+        // {
+        //      $isValidate = Validator::make($request->all(), [
+        //             'firstname' => 'required|string|max:191',
+        //             'lastname' => 'required|string|max:191',
+        //             'mobileno' => 'required',
+        //             'address' => 'required',
+
+        //             'cnic' => 'required|unique:users|max:191',
+        //             'roleid' => 'required',
+        //             'rolename' => 'required',
+        //             'password' => 'required',
+
+        //         ]);
+        //         if ($isValidate->fails()) {
+        //             return response()->json([
+        //                 "errors" => $isValidate->errors()->all(),
+        //                 "success" => false
+        //             ], 403);
+        //         }
+
+        //         $society = new Society;
+
+
+
+
+        //         $user = new User;
+        //         $user->firstname = $request->firstname;
+        //         $user->lastname = $request->lastname;
+        //         $user->mobileno = $request->mobileno;
+        //         $user->address = $request->address;
+
+        //         $user->cnic = $request->cnic;
+        //         $user->roleid = $request->roleid;
+        //         $user->rolename = $request->rolename;
+        //         $user->password = Hash::make($request->password);
+        //         $user->image = $imagepath;
+        //         $user->save();
+
+
+
+        //         if($superadminid != $user->id && $societyid != $society->id ){
+
+        //           $fin =   $superadminid->findOrFail($user->id);
+
+        //             dd($superadminid ,$user->id ,$societyid ,$society->id,$fin);
+
+
+
+        //             return response()->json([
+        //                 "errors" => $isValidate->errors()->all(),
+        //                 'id' => 'wrong id',
+        //                  "success" => false
+        //             ], 403);
+        //         }
+
+
+
+
+
+        //             $subadminsocieties = new subadminsociety;
+        //             $subadminsocieties->superadminid=$superadminid;
+        //             $subadminsocieties-> subadminid=$user->id;
+        //             $subadminsocieties-> societyid =$societyid;
+        //             $subadminsocieties->save();
+        //             $tk =   $user->createToken('token')->plainTextToken;
+        //             return response()->json(
+        //                 [
+        //                     "token" => $tk,
+        //                     "success" => true,
+        //                     "message" => "User Register Successfully",
+        //                     "data" => $user,
+        //                 ]
+        //             );
+        // }
 
 
 
