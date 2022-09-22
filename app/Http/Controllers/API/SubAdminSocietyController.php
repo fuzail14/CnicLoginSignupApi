@@ -26,7 +26,8 @@ class SubAdminSocietyController extends Controller
             'password' => 'required',
             'superadminid' => 'required|exists:users,id',
             'societyid' => 'required|exists:societies,id',
-            'image' => 'required',
+            //'image' => 'required',
+
 
         ]);
         if ($isValidate->fails()) {
@@ -37,7 +38,7 @@ class SubAdminSocietyController extends Controller
             ], 403);
         }
 
-        $imagepath = $request->file('image')->store('public/uploads');
+        //$imagepath = $request->file('image')->store('public/uploads');
         
 
         $user = new User;
@@ -48,7 +49,7 @@ class SubAdminSocietyController extends Controller
         $user->mobileno = $request->mobileno;
         $user->roleid = $request->roleid;
         $user->rolename = $request->rolename;
-        $user->image = $imagepath;
+        //$user->image = $imagepath;
 
         $user->password = Hash::make($request->password);
         $user->save();
@@ -63,9 +64,11 @@ class SubAdminSocietyController extends Controller
         return response()->json(
             [
                 "token" => $tk,
+
                 "success" => true,
                 "message" => "Sub Admin Assign to Society Successfully",
                 "data" => $user,
+                "data2" => $subadminsociety,
             ]
         );
     }

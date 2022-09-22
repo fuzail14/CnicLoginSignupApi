@@ -33,9 +33,9 @@ class SuperAdminLoginAuthController extends Controller
 
             'cnic' => 'required|string|max:191|unique:users,cnic',
             'password' => 'required|string',
-            'roleid' => 'required|string',
+            'roleid' => 'required',
             'rolename' => 'required|string',
-            'image' => 'required',
+            //'image' => 'required',
 
 
 
@@ -59,7 +59,7 @@ class SuperAdminLoginAuthController extends Controller
 
 
 
-        $imagepath = $request->file('image')->store('public/uploads');
+        //$imagepath = $request->file('image')->store('public/uploads');
         
 
 
@@ -170,7 +170,7 @@ class SuperAdminLoginAuthController extends Controller
         $user->roleid = $request->roleid;
         $user->rolename = $request->rolename;
         $user->password = Hash::make($request->password);
-        $user->image = $imagepath;
+        //$user->image = $imagepath;
         $user->save();
 
 

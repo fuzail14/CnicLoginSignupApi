@@ -19,20 +19,25 @@ use App\Http\Controllers\API\SubAdminSocietyController;
 |
 */
 
-Route::post('register',[SuperAdminLoginAuthController::class,'register']);
-
-Route::post('login',[SuperAdminLoginAuthController::class,'login']);
 
 
 
 Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('logout',[SuperAdminLoginAuthController::class,'logout']);
     Route::get('alluser',[SuperAdminLoginAuthController::class,'alluser']);
+
+
+
     Route::post('addsociety',[AddSocietyController::class,'addsociety']);
     Route::post('updatesociety/{id}',[AddSocietyController::class,'updatesociety']);
     Route::get('viewallsocieties/{mainadminid}',[AddSocietyController::class,'viewallsocieties']);
     Route::delete('deletesociety/{id}',[AddSocietyController::class,'deletesociety']);
     Route::get('searchsociety/{q?}',[AddSocietyController::class,'searchsociety']);
+
+
+
+
+    
     Route::post('registersubadmin',[SubAdminSocietyController::class,'registersubadmin']);
 
 
@@ -47,6 +52,13 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     
 });
+
+
+
+
+Route::post('register',[SuperAdminLoginAuthController::class,'register']);
+
+Route::post('login',[SuperAdminLoginAuthController::class,'login']);
 
 
 

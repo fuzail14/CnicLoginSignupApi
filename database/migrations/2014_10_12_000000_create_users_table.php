@@ -24,9 +24,9 @@ return new class extends Migration
             $table->string('cnic')->unique();
             
             $table->string('password');
-            $table->string('roleid');
+            $table->unsignedBigInteger('roleid');
             $table->string('rolename');
-            $table->string('image');
+            //$table->string('image');
             
 
 
